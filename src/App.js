@@ -19,7 +19,8 @@ import "./home.css";
 function App() {
   return (
     <CartProvider>
-      <Router>
+      {/* 🚨 Important for Deployed URL to Work */}
+      <Router basename="/E-Commerce-Website">
         <Navbar />
         <main>
           <Routes>
@@ -31,6 +32,9 @@ function App() {
             <Route path="/cart" element={<CartPage />} />
             <Route path="/checkout" element={<Checkout />} />
             <Route path="/signin" element={<SignIn />} />
+
+            {/* Prevents NO ROUTE MATCHING & Blank Screen */}
+            <Route path="*" element={<Home />} />
           </Routes>
         </main>
         <Footer />
