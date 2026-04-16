@@ -11,10 +11,18 @@ export default function Checkout() {
   const navigate = useNavigate();
 
   async function placeOrder() {
+    // Validate form inputs
     if (!email || !name) {
       alert("Enter name and email");
       return;
     }
+
+    // Validate cart is not empty
+    if (!cart || cart.length === 0) {
+      alert("Your cart is empty. Add items before placing an order.");
+      return;
+    }
+
     setLoading(true);
     const order = { name, email, addr, items: cart, total };
 
@@ -25,19 +33,16 @@ export default function Checkout() {
         body: JSON.stringify(order),
       });
       if (res.ok) {
-        alert("Order placed!.");
+        alert("Order placed successfully!");
         clearCart();
         navigate("/");
       } else {
-        alert("Order placed locally.");
-        clearCart();
-        navigate("/");
+        const errorData = await res.json().catch(() => ({}));
+        alert(`Order failed: ${errorData.message || "Please try again."}`);
       }
     } catch (err) {
-      console.error(err);
-      alert("Order Placed Successfully.");
-      clearCart();
-      navigate("/");
+      console.error("Order placement error:", err);
+      alert("Error placing order. Please check your connection and try again.");
     } finally {
       setLoading(false);
     }

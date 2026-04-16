@@ -13,14 +13,15 @@ import Fashion from "./pages/fashion";
 import CartPage from "./pages/cart";
 import Checkout from "./pages/order";
 import SignIn from "./pages/signin";
+import SignUp from "./pages/signup";
 
 import "./home.css";
 
 function App() {
   return (
     <CartProvider>
-      {/* 🚨 Important for Deployed URL to Work */}
-      <Router basename="/E-Commerce-Website">
+      {/* Remove basename for local development - add back for deployment */}
+      <Router>
         <Navbar />
         <main>
           <Routes>
@@ -32,6 +33,7 @@ function App() {
             <Route path="/cart" element={<CartPage />} />
             <Route path="/checkout" element={<Checkout />} />
             <Route path="/signin" element={<SignIn />} />
+            <Route path="/signup" element={<SignUp />} />
 
             {/* Prevents NO ROUTE MATCHING & Blank Screen */}
             <Route path="*" element={<Home />} />

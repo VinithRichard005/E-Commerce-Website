@@ -1,17 +1,27 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
+import { loginUser } from "../api";
 
 export default function SignIn() {
-  const [u, setU] = useState("");
-  const [p, setP] = useState("");
-  const [err, setErr] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  function login() {
-    if (u === "Abcd" && p === "123456789") {
+  async function login() {
+    if (!email || !password) {
+      setError("Please enter your email and password");
+      return;
+    }
+
+    const result = await loginUser(email, password);
+
+    if (result.success) {
       navigate("/");
+      // Force navbar to re-read localStorage
+      window.dispatchEvent(new Event("storage"));
     } else {
-      setErr("Invalid Username or Password");
+      setError(result.error);
     }
   }
 
@@ -19,30 +29,35 @@ export default function SignIn() {
     <div
       style={{
         display: "flex",
-        minHeight: "70vh",
+        minHeight: "75vh",
         justifyContent: "center",
         alignItems: "center",
+        padding: "20px"
       }}
     >
-      <div
-        style={{ width: 320, padding: 20, background: "#fff", borderRadius: 8 }}
-      >
-        <h3>Sign In</h3>
+      <div className="checkout-form" style={{ width: 400, maxWidth: "100%", margin: "0 auto" }}>
+        <h2>Sign In</h2>
         <input
-          placeholder="Username"
-          value={u}
-          onChange={(e) => setU(e.target.value)}
+          placeholder="Email ID"
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
         />
         <input
           placeholder="Password"
           type="password"
-          value={p}
-          onChange={(e) => setP(e.target.value)}
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
         />
-        <button onClick={login} style={{ marginTop: 10 }}>
+        <button onClick={login}>
           Login
         </button>
-        {err && <p style={{ color: "red" }}>{err}</p>}
+        {error && <p style={{ color: "#ef4444", textAlign: "center", marginTop: "16px", fontWeight: "600" }}>{error}</p>}
+
+        <div style={{ textAlign: "center", marginTop: "20px" }}>
+          <span style={{ color: "var(--text-muted)" }}>Don't have an account? </span>
+          <Link to="/signup" style={{ color: "var(--primaryHover)", textDecoration: "none", fontWeight: "600" }}>Create one now</Link>
+        </div>
       </div>
     </div>
   );
